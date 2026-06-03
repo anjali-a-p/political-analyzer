@@ -33,9 +33,13 @@ function App() {
   return (
     <main className="page">
       <section className="card">
+        <div className="hero-badge">AI-Powered Political Analysis</div>
+
         <h1>Political Content Analyzer</h1>
+
         <p className="subtitle">
-          Paste an article URL to extract and analyze political content.
+          Paste a news article or political content URL to extract the text,
+          classify ideological leaning, and surface potential bias indicators.
         </p>
 
         <form onSubmit={analyzeUrl}>
@@ -50,6 +54,12 @@ function App() {
             {loading ? "Analyzing..." : "Analyze"}
           </button>
         </form>
+
+        <div className="features">
+          <div className="feature">Extract Articles</div>
+          <div className="feature">AI Classification</div>
+          <div className="feature">Leaning Scores</div>
+        </div>
 
         {error && <p className="error">{error}</p>}
 
@@ -104,7 +114,7 @@ function App() {
                   </span>
                 ))
               ) : (
-                <span>No loaded language detected</span>
+                <span className="empty-state">No loaded language detected</span>
               )}
             </div>
 
