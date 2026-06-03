@@ -20,11 +20,17 @@ function App() {
       });
       setResult(response.data);
     } catch (err) {
-      setError("Could not analyze this URL.");
+      setError(
+        err.response?.data?.error ||
+          err.message ||
+          "Could not analyze this URL."
+      );
     } finally {
       setLoading(false);
     }
   }
+
+  const scores = result?.analysis?.leaning_scores || {};
 
   return (
     <main className="page">
@@ -49,15 +55,39 @@ function App() {
 
         {result && (
           <section className="results">
-            <h2>Results</h2>
-            <p><strong>Source:</strong> {result.source_domain}</p>
-            <p><strong>Word count:</strong> {result.word_count}</p>
-            <p><strong>Leaning:</strong> {result.analysis?.leaning}</p>
-            <p><strong>Confidence:</strong> {result.analysis?.confidence}</p>
-            <p><strong>Summary:</strong> {result.analysis?.summary}</p>
-            <p><strong>Explanation:</strong> {result.analysis?.explanation}</p>
+            <h2>Analysis Results</h2>
 
-            <h3>Preview</h3>
+            <p>
+              <strong>Source:</strong> {result.source_domain}
+            </p>
+
+            <p>
+              <strong>Word count:</strong> {result.word_count}
+            </p>
+
+            <p>
+              <strong>Final result:</strong> {result.analysis?.leaning}
+            </p>
+
+            <h3>Leaning Scores</h3>
+            <ul className="score-list">
+              <li>Left: {Math.round((scores["left-leaning"] || 0) * 100)}%</li>
+              <li>Center: {Math.round((scores["center"] || 0) * 100)}%</li>
+              <li>Right: {Math.round((scores["right-leaning"] || 0) * 100)}%</li>
+            </ul>
+
+            <h3>Bias Indicators</h3>
+            {result.analysis?.bias_indicators?.length > 0 ? (
+              <ul>
+                {result.analysis.bias_indicators.map((word) => (
+                  <li key={word}>{word}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>No loaded language detected.</p>
+            )}
+
+            <h3>Extracted Article Preview</h3>
             <p className="preview">{result.preview}</p>
           </section>
         )}
