@@ -31,9 +31,16 @@ def analyze(request: AnalyzeRequest):
     domain = urlparse(request.url).netloc
 
     return {
-        "url": request.url,
-        "source_domain": domain,
-        "article_length": len(text),
-        "word_count": len(words),
-        "preview": text[:700]
+    "url": request.url,
+    "source_domain": domain,
+    "article_length": len(text),
+    "word_count": len(words),
+    "preview": text[:700],
+    "analysis": {
+        "leaning": "center",
+        "confidence": 0.72,
+        "summary": "This is placeholder analysis. Real AI analysis will be added next.",
+        "explanation": "The article was extracted successfully, but political classification is not implemented yet.",
+        "bias_indicators": []
     }
+}
