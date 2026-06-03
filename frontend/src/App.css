@@ -207,13 +207,14 @@ button:disabled {
   color: #cbd5e1;
 }
 
-.preview {
+.summary-box {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 18px;
   padding: 22px;
   line-height: 1.8;
   color: #e5e7eb;
+  text-align: left;
 }
 
 .error {

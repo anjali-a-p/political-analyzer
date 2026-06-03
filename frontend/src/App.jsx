@@ -118,9 +118,11 @@ function App() {
               )}
             </div>
 
-            <h3 className="section-title">Extracted Article Preview</h3>
+            <h3 className="section-title">Article Summary</h3>
 
-            <div className="preview">{result.preview}</div>
+            <div className="summary-box">
+              {result.analysis?.summary}
+            </div>
           </section>
         )}
       </section>
