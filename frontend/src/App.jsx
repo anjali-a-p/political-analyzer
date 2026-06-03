@@ -16,7 +16,7 @@ function App() {
 
     try {
       const response = await axios.post("http://127.0.0.1:8000/analyze", {
-        url: url,
+        url,
       });
       setResult(response.data);
     } catch (err) {
@@ -30,13 +30,13 @@ function App() {
     }
   }
 
-  const scores = result?.analysis?.leaning_scores || {};
-
   return (
     <main className="page">
       <section className="card">
         <h1>Political Content Analyzer</h1>
-        <p>Paste an article URL to extract and analyze political content.</p>
+        <p className="subtitle">
+          Paste an article URL to extract and analyze political content.
+        </p>
 
         <form onSubmit={analyzeUrl}>
           <input
@@ -57,38 +57,60 @@ function App() {
           <section className="results">
             <h2>Analysis Results</h2>
 
-            <p>
-              <strong>Source:</strong> {result.source_domain}
-            </p>
+            <div className="stats-grid">
+              <div className="stat-card">
+                <div className="stat-label">Source</div>
+                <div className="stat-value">{result.source_domain}</div>
+              </div>
 
-            <p>
-              <strong>Word count:</strong> {result.word_count}
-            </p>
+              <div className="stat-card">
+                <div className="stat-label">Word Count</div>
+                <div className="stat-value">{result.word_count}</div>
+              </div>
 
-            <p>
-              <strong>Final result:</strong> {result.analysis?.leaning}
-            </p>
+              <div className="stat-card">
+                <div className="stat-label">Result</div>
+                <div className="stat-value">{result.analysis?.leaning}</div>
+              </div>
+            </div>
 
-            <h3>Leaning Scores</h3>
-            <ul className="score-list">
-              <li>Left: {Math.round((scores["left-leaning"] || 0) * 100)}%</li>
-              <li>Center: {Math.round((scores["center"] || 0) * 100)}%</li>
-              <li>Right: {Math.round((scores["right-leaning"] || 0) * 100)}%</li>
-            </ul>
+            <h3 className="section-title">Political Leaning Scores</h3>
 
-            <h3>Bias Indicators</h3>
-            {result.analysis?.bias_indicators?.length > 0 ? (
-              <ul>
-                {result.analysis.bias_indicators.map((word) => (
-                  <li key={word}>{word}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>No loaded language detected.</p>
+            {Object.entries(result.analysis?.leaning_scores || {}).map(
+              ([label, score]) => (
+                <div key={label} className="score-row">
+                  <div className="score-header">
+                    <span>{label}</span>
+                    <span>{Math.round(score * 100)}%</span>
+                  </div>
+
+                  <div className="score-bar-container">
+                    <div
+                      className="score-bar"
+                      style={{ width: `${score * 100}%` }}
+                    />
+                  </div>
+                </div>
+              )
             )}
 
-            <h3>Extracted Article Preview</h3>
-            <p className="preview">{result.preview}</p>
+            <h3 className="section-title">Bias Indicators</h3>
+
+            <div className="badges">
+              {result.analysis?.bias_indicators?.length > 0 ? (
+                result.analysis.bias_indicators.map((word) => (
+                  <span key={word} className="badge">
+                    {word}
+                  </span>
+                ))
+              ) : (
+                <span>No loaded language detected</span>
+              )}
+            </div>
+
+            <h3 className="section-title">Extracted Article Preview</h3>
+
+            <div className="preview">{result.preview}</div>
           </section>
         )}
       </section>
