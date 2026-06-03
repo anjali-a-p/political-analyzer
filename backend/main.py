@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import trafilatura
+import requests
 
 app = FastAPI()
 
@@ -13,10 +14,15 @@ def root():
 
 @app.post("/analyze")
 def analyze(request: AnalyzeRequest):
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
     downloaded = trafilatura.fetch_url(request.url)
 
     if downloaded is None:
-        return {"error": "Could not fetch URL"}
+        response = requests.get(request.url, headers=headers, timeout=10)
+        downloaded = response.text
 
     text = trafilatura.extract(downloaded)
 
