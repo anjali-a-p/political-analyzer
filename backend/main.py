@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from urllib.parse import urlparse
 import trafilatura
 import requests
 
@@ -14,13 +15,10 @@ def root():
 
 @app.post("/analyze")
 def analyze(request: AnalyzeRequest):
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
-
     downloaded = trafilatura.fetch_url(request.url)
 
     if downloaded is None:
+        headers = {"User-Agent": "Mozilla/5.0"}
         response = requests.get(request.url, headers=headers, timeout=10)
         downloaded = response.text
 
@@ -29,8 +27,13 @@ def analyze(request: AnalyzeRequest):
     if not text:
         return {"error": "Could not extract article text"}
 
+    words = text.split()
+    domain = urlparse(request.url).netloc
+
     return {
         "url": request.url,
+        "source_domain": domain,
         "article_length": len(text),
-        "preview": text[:500]
+        "word_count": len(words),
+        "preview": text[:700]
     }
